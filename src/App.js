@@ -5,9 +5,9 @@ import {init} from './test';
 import fs from 'fs';
 
 class App extends Component{
-  initalize = () => {
+  initalize = async () => {
     const canvas = document.getElementById("canvas");
-    //init(canvas);
+    await init(canvas);
     fs.readFileSync("./index.js");
   }
 
