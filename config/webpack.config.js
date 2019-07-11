@@ -618,7 +618,7 @@ module.exports = function(webpackEnv) {
       fs: 'empty',
       http2: 'empty',
       net: 'empty',
-     // tls: 'empty',
+      tls: 'empty',
       child_process: 'empty',
     },
     // Turn off performance processing because we utilize

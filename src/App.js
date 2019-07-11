@@ -8,25 +8,15 @@ class App extends Component{
   initalize = async () => {
     const canvas = document.getElementById("canvas");
     await init(canvas);
-    fs.readFileSync("./index.js");
+
+
   }
 
   render(){
     return (
         <div className="App" onClick={this.initalize}>
           <header className="App-header">
-           <canvas id="canvas" width="500" height="400"></canvas>
-            <p>
-              Edit <code>src/App.js</code> and save to reload.
-            </p>
-            <a
-                className="App-link"
-                href="https://reactjs.org"
-                target="_blank"
-                rel="noopener noreferrer "
-            >
-              Learn React
-            </a>
+           <canvas id="canvas" width="480" height="320"></canvas>
           </header>
 
         </div>
