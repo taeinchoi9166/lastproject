@@ -1,0 +1,20 @@
+header{
+  width:80%;
+  justify-content: center;
+  padding:2rem;
+  display: flex;
+
+  img{
+    float:left;
+  }
+
+  h2{
+    height:100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    padding:1rem;
+    color:#333;
+  }
+}

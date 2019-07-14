@@ -1,50 +1,49 @@
 import request from 'request';
 const GBA = require("gbajs");
 const converter = require('./lib/util/converter');
-// import a from './../assets/puyo_pop.gba';
 
-export let init = async (canvas) => {
+export const init = (canvas,file) => {
     let simul = new GBA();
-    let bios;
 
-    simul.logLevel = simul.LOG_ERROR;
-    try{
-        await request.get('http://localhost:4000/bios',(err,response,data)=>{
-            if(err) console.log(err);
-            bios = converter.convertBufferToArrayBuffer(JSON.parse(data));
+    const fr = new FileReader();
+    simul.setCanvasMemory();
+    simul.setCanvas(canvas);
+
+    return new Promise(async resolve => {
+        simul.logLevel = simul.LOG_ERROR;
+
+        // await request.get('http://localhost:4000/bios',(err,response,data)=>{
+        //         if(err) console.log(err);
+        //         let bios = converter.convertBufferToArrayBuffer(JSON.parse(data));
+        //         console.log(bios);
+        //         simul.setBios(bios);
+        //
+        //         resolve(simul);
+        //     });
+        fr.addEventListener("load",()=>{
+            let bios = fr.result;
             console.log(bios);
-            simul.setBios(bios);
-            simul.setCanvasMemory();
-            simul.setCanvas(canvas);
-        });
 
+            simul.setBios(bios);
+            console.log("setting");
+            simul.setCanvas(canvas);
+            simul.setCanvasMemory();
+
+            resolve(simul);
+        });
+        fr.readAsArrayBuffer(file);
+    });
+};
+
+export const setGame = (simul,file) => {
+
+    return new Promise(async resolve => {
         await request.get('http://localhost:4000/game', (err,response,data)=>{
             if(err) console.log(err);
+            console.log(data);
             let rom = converter.convertBufferToArrayBuffer(JSON.parse(data));
             let isSuccess = simul.setRom(rom);
-            if(isSuccess){
-                console.log("running...");
-                simul.runStable();
-
-                console.log(simul.video.context.canvas.toDataURL('image/png'));
-                setTimeout(()=>{
-                    console.log(simul.targetCanvas.toDataURL('image/png'));
-                },1000);
-            }else{
-                process.exit(1);
-            }
+            resolve(simul);
         })
-    }catch(exception){
-        console.error(exception);
-    }
-
-
-
-    let i = 0;
-    // setInterval(()=>{
-    //     const keypad = simul.keypad;
-    //     keypad.press(keypad.A);
-    //     const image = simul.screenshot()
-    //     image.pack().pipe(createWriteStream(i+'screen.png'))
-    // },1000);
-};
+    });
+}

@@ -1,0 +1,57 @@
+section{
+  width:80%;
+  float:left;
+  .canvas-wrap{
+    justify-content: center;
+    display: flex;
+    #canvas{
+      padding:2rem;
+    }
+  }
+
+  .pause-btn{
+    background:#888;
+    display: inline-block;
+    padding: 1.1rem;
+    border-radius: 10px;
+    font-size:1.2rem;
+    transition: 0.5s;
+    margin-left:30%;
+    margin-right:30%;
+
+    &:hover{
+      background:#444;
+      color:#ddd;
+    }
+  }
+}
+
+aside{
+  width:20%;
+  float:left;
+  .rom-list{
+    float:right;
+    margin-right:2rem;
+  }
+}
+
+.help{
+  width:50%;
+  margin:0 25%;
+  height:9rem;
+  float:left;
+    ul{
+      background:#bbb;
+      border-radius: 12px;
+      width:100%;
+      height:100%;
+      li{
+        width:50%;
+        height:20%;
+        float:left;
+        color:#fff;
+        padding:1rem;
+        text-align: center;
+      }
+    }
+}
