@@ -30,7 +30,7 @@ class RomList extends Component{
         return(
           <div className="rom-list">
               <ul>
-                  {this.state.romList.map((item)=>(<li onClick={this.props.onLoadGame}>{item}</li>))}
+                  {this.state.romList.map((item,idx)=>(<li onClick={this.props.onLoadGame} key={idx}>{item}</li>))}
               </ul>
           </div>
         );

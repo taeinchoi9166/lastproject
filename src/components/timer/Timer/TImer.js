@@ -6,7 +6,8 @@ class Timer extends Component{
         const time = this.props.time;
         return(
           <div className="timer">
-              {parseInt((time/30)/(60))+" : "+parseInt((time/30)%60)}
+              <span>{this.props.nowGame.length > 20 ? this.props.nowGame.substring(0,16) + "..." : this.props.nowGame || "please select a game"}</span><br/>
+              <div>{parseInt((time/30)/(60))+" : "+parseInt((time/30)%60)}</div>
           </div>
         );
     }

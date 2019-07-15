@@ -12,51 +12,36 @@ import {convertBufferToArrayBuffer} from './lib/util/converter';
 
 class App extends Component{
     state = {
-        simul: null,
-        isRomLoaded: false,
-        time: 0,
-        canvas: null,
-        isPaused:false
+        simul: null, // GBA 객체
+        isRomLoaded: false, //롬 로딩 여부
+        time: 0, //진행 시간
+        canvas: null, //캔버스 DOM
+        isPaused:false, // 중지 버튼 누름 여부
+        nowGame:"" // 현재 진행중인 게임명
     }
 
     componentDidMount() {
         const canvas = document.getElementById("canvas");
         let simul = new GBA();
 
-        getBios().then((data)=>{
+        getBios().then((data)=>{ //롬 로딩
             const bios = convertBufferToArrayBuffer(data);
             simul.setBios(bios);
             simul.setCanvas(canvas);
             simul.setCanvasMemory();
 
-            window.addEventListener("keydown",(e)=>{
-                //simul.keypad.keydown(e.keyCode)
 
-                let toggle = e.keyCode;
-                // toggle = 1 << toggle;
-                // simul.keypad.currentDown &= ~toggle;
-                // simul.keypad.currentDown |= toggle;
-                simul.keypad.keyboardHandler(e);
-                // console.log("arrow")
-                // if(toggle<=40&&toggle>=37){
-                //    // simul.keypad.keydown(toggle);
-                //     simul.keypad.keyboardHandler(e);
-                // }else{
-                //     simul.keypad.press(toggle,10);
-                // }
-             //   console.log(simul.keypad.currentDown)
+            //키 설정
+            // 현재 동시에 키를 눌렀다 한쪽만 뗐을 떄 나머지 키 하나가 안먹는 오류 발생
+            window.addEventListener("keydown",(e)=>{
+                 simul.keypad.keyboardHandler(e);
             })
             window.addEventListener("keyup",(e)=>{
-                simul.keypad.keyup(e.keyCode)
-                //let toggle = e.keyCode;
-                // simul.keypad.currentDown= 0x03FF;
-                // simul.keypad.currentDown &= ~toggle;
-                // simul.keypad.currentDown |= toggle;
-              //  console.log(simul.keypad.currentDown)
+                 simul.keypad.currentDown= 0x03FF;
             })
         })
 
-        this.setState({
+        this.setState({ //실행시킨 시뮬레이터 저장
             ...this.state,
             canvas:canvas,
             simul:simul
@@ -65,18 +50,14 @@ class App extends Component{
 
 
 
-  loadRom = (e) => {
-        console.log("load");
-        const simul = this.state.simul;
+  loadRom = (e) => { //롬 로딩 - ROMList 컴포넌트에 전달
+      const simul = this.state.simul;
       const name = e.target.innerText;
-      console.log(name);
 
-      getRom(name).then((data)=>{
-          console.log("eee");
+      getRom(name).then((data)=>{ //롬 받기
           let rom = convertBufferToArrayBuffer(data);
           try{
               simul.setRom(rom);
-              console.log(simul)
               simul.runStable();
           }catch(exception){
               console.error(exception);
@@ -84,60 +65,17 @@ class App extends Component{
 
           this.setState({
               ...this.state,
-              time:0
+              time:0,
+              nowGame:name,
+              isPaused:false
           });
 
 
-           this.renderOnCanvas();
-           this.countTimer();
+           this.renderOnCanvas(); //랜더링
+           this.countTimer(); //시간 증가
       });
   }
 
-  loadSaveFile = (e) => {
-       //  const file = e.target.files[0];
-       // // let fr = new FileReader();
-       //  console.log(file);
-       // fr.addEventListener("load",()=>{
-            // const data = fr.result;
-            // console.log(data);
-            // const buffer = convertArrayBufferToBuffer(data);
-            //  const simul = this.state.simul;
-            // //console.log(simul.retrieveSavedata())
-            //  simul.storeSavedata();
-            //  setTimeout(()=>{
-            //      simul.retrieveSavedata();
-            //  },2000);
-             //console.log(simul.retrieveSavedata())
-            // console.log(simul.mmu)
-            // try{
-            //     simul.reset();
-            //     simul.setSavedata(simul.mmu.memory);
-            //     simul.runStable();
-            // }catch(exception){
-            //     console.error(exception);
-            // }
-
-        //});
-
-        //fr.readAsArrayBuffer(file);
-
-
-  }
-
-  getSaveFile = () => {
-        const simul = this.state.simul;
-        const sram = simul.mmu.save;
-
-        const data = Buffer.from(sram.buffer);
-        //const saveData = simul;
-        console.log(data);
-
-        simul.downloadSavedata();
-
-        setTimeout(()=>{
-            simul.setSavedata(data);
-        },2000)
-  }
 
   togglePause = () => {
         const isPaused = !this.state.isPaused
@@ -154,7 +92,7 @@ class App extends Component{
 
   countTimer = () => {
     const self = this;
-    setInterval(()=>{
+    setInterval(()=>{ // 0.01초 간격으로 1씩 증가
         if(!this.state.isPaused) {
             this.setState({
                 ...this.state,
@@ -168,19 +106,18 @@ class App extends Component{
         const [ctx, simul] = [this.state.canvas.getContext("2d"), this.state.simul];
 
       setInterval(()=>{
-          const data = simul.screenshot().pack().data;
+          const data = simul.screenshot().pack().data; //이미지 Buffer 가져옴
           // console.log(data);
           const blob = new Blob([simul.context.pixelData.data],{type:'image/png'});
           const url = URL.createObjectURL(blob);
-          //const img = document.getElementById("image");
-          //img.src = url;
-          //window.open(url);
 
           const dataArray = Array.from(data);
           const imageData = ctx.getImageData(0,0,240,160);
 
-          //console.log(dataArray);
-          ctx.clearRect(0,0,240,160)
+          if(this.state.time%400 === 0){
+              ctx.clearRect(0,0,240,160);
+              console.log("clear!");
+          }
           for(let i = 0; i < 240* 160* 4; i+=4){
               imageData.data[i] = dataArray[i];
               imageData.data[i+1] = dataArray[i+1];
@@ -201,8 +138,8 @@ class App extends Component{
                 <div className="canvas-wrap">
                     <canvas id="canvas" width="240" height="160"></canvas>
                 </div>
-                <button className="pause-btn" onClick={this.togglePause}>중지</button>
-                <Timer time={this.state.time}/>
+                <button className="pause-btn" onClick={this.togglePause}>{this.state.isPaused ? "계속하기" : "중지하기"}</button>
+                <Timer time={this.state.time} nowGame={this.state.nowGame}/>
             </section>
             <aside>
                 <RomList onLoadGame={this.loadRom}/>

@@ -1,6 +1,6 @@
 .rom-list{
-    background:#cfcfcf;
-    width:7rem;
+    background: #555;
+    width:8rem;
     display:inline-block;
     border-radius:5px;
 
@@ -13,10 +13,11 @@
             font-size:0.8rem;
             text-align:center;
             transition:0.4s;
-            color:#888;
+            color:#ccc;
+            cursor:pointer;
 
             &:hover{
-                color:#222;
+                color:#fff;
             }
         }
     }

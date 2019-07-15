@@ -1,7 +1,16 @@
 .timer{
   background:#888;
-  padding:1rem;
+  padding:0.7rem;
   border-radius: 10px;
   display: inline-block;
   font-size:1.5rem;
+
+  span{
+    text-align: center;
+    font-size:0.9rem;
+  }
+
+  div{
+    text-align: center;
+  }
 }
