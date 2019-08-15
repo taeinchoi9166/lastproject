@@ -8,7 +8,7 @@ gba 에뮬레이터
 
 ##사진
 
-![1.png](../../images/1.png)
-![1.png](../../images/2.png)
-![1.png](../../images/3.png)
-![1.png](../../images/4.png)
+![](https://github.com/taeinchoi9166/lastproject/blob/master/images/1.PNG)
+![](https://github.com/taeinchoi9166/lastproject/blob/master/images/2.PNG)
+![](https://github.com/taeinchoi9166/lastproject/blob/master/images/3.PNG)
+![](https://github.com/taeinchoi9166/lastproject/blob/master/images/4.PNG)
